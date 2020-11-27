@@ -40,8 +40,29 @@ fakeApi = () => {
     ];
   }
   app.get('/', (req, res) => {
-  res.render('main', {layout: 'index', suggestedChamps: fakeApi(), listExists: true});
-  });
+  const lingua= req.headers["accept-language"].substr(0,2) 
+  if(lingua==="it"){
+    res.render('main', {layout: 'index', nome: req.query.nome, cognome: req.query.cognome, eta:req.query.eta, saluto:"Ciao"});
+  }else{
+    res.render('main', {layout: 'index', nome: req.query.nome,  cognome: req.query.cognome, eta:req.query.eta, saluto:"Hello"});
+  }
+
+  app.get("/", (req, res) => {
+    const query = req.query
+    const headers = req.headers
+    const messaggioSaluto = "Ciao " + query.name + ", " + query.cognome  + ". <br/> Hai " + query.anni + "anni"
+    res.send(messaggioSaluto + " <br />" + informazioni)
+  })
+  
+  app.get("/informazioni", (req, res) => {
+    const headers = req.headers
+    const informazioni = "Il tuo user agent è: " + headers["user-agent"]
+    const ip = "Il tuo ip è:" + req.headers['x-forwarded-for']
+    res.send(informazioni + "<br/>" + ip)
+  })
+  
+ 
+});
 
 app.listen(port, () => console.log(`App listening to port ${port}`));
 
